@@ -1,5 +1,5 @@
 """
-A simple browser workaround for ChatGPT + proxy integration
+A simple proxy workaround for ChatGPT
 Source: https://github.com/acheong08/ChatGPT
 """
 import json
