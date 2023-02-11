@@ -1,6 +1,8 @@
-import src.chatGPT.chatGPT_proxied as chatgpt
-import os
 import json
+
+# Custom packages
+import src.chatGPT.chatGPT_proxied as chatgpt
+import src.save.save_response as save
 
 def main():
     """
@@ -10,10 +12,20 @@ def main():
         config = json.loads(f.read())
     chat = chatgpt.Chatbot(config=config)
 
-    prompt = "Hello, how are you?"
+    # Select a prompt
+    prompt = ""
+    prompt_id = 1/2/7/8
+
+    # Get answer
     answer = chat.ask(prompt)
     text = answer["message"]
-    pass
+    conv_id = answer["conversation_id"]
+
+    # Save answer
+    save.response(
+        string=text,
+        file_name=f"{prompt_id}_{conv_id}.txt",
+        folder_path="data")
 
 if __name__ == "__main__":
     main()
