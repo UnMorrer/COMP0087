@@ -6,7 +6,9 @@ authors = ["Marcell O <omarcell@yahoo.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.10"
+pandas = "^1.5.3"
+chatgptpy = "^1.0.8"
 
 
 [build-system]
