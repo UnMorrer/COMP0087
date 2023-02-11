@@ -1,11 +1,12 @@
 """
-A simple proxy workaround for ChatGPT
+A simple wrapper for ChatGPT API + proxies
 Source: https://github.com/acheong08/ChatGPT
 """
 import json
 import logging
 import uuid
 from os import environ
+from random import choice
 
 import tls_client
 from OpenAIAuth.OpenAIAuth import OpenAIAuth
@@ -13,7 +14,9 @@ from OpenAIAuth.OpenAIAuth import OpenAIAuth
 # Disable all logging
 logging.basicConfig(level=logging.ERROR)
 
-BASE_URL = environ.get("CHATGPT_BASE_URL") or "https://chatgpt.duti.tech/"
+BASE_URL = environ.get("CHATGPT_BASE_URL") or choice(
+    ["https://chatgpt.duti.tech/", "https://sathoro.duti.tech/"]
+)
 
 
 class Chatbot:
@@ -90,7 +93,8 @@ class Chatbot:
         :param parent_id: UUID
         :param gen_title: Boolean
         """
-        self.__map_conversations()
+        if conversation_id is not None and parent_id is None:
+            self.__map_conversations()
         if conversation_id is None:
             conversation_id = self.conversation_id
         if parent_id is None:
