@@ -129,7 +129,7 @@ dmypy.json
 .pyre/
 
 # Scraped data
-data/*
+data/responses/*
 
 # chatPGT configuration
 config/config.json

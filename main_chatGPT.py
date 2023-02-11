@@ -25,7 +25,7 @@ def main():
     save.response(
         string=text,
         file_name=f"{prompt_id}_{conv_id}.txt",
-        folder_path="data")
+        folder_path="data/responses")
 
 if __name__ == "__main__":
     main()
