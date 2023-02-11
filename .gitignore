@@ -132,4 +132,4 @@ dmypy.json
 data/*
 
 # chatPGT configuration
-config.json
+config/config.json
