@@ -12,7 +12,7 @@ def main():
         config = json.loads(f.read())
     chat = chatgpt.Chatbot(config=config)
 
-    # Select a prompt
+    # TODO:Select a prompt
     prompt = ""
     prompt_id = 1/2/7/8
 
