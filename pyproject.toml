@@ -8,7 +8,12 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 pandas = "^1.5.3"
-chatgptpy = "^1.0.8"
+openai = "^0.26.5"
+tiktoken = "^0.2.0"
+tls-client = "^0.1.8"
+undetected-chromedriver = "^3.4.6"
+selenium = "^4.8.0"
+OpenAIAuth = "^0.1.0"
 
 
 [build-system]

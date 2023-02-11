@@ -130,3 +130,6 @@ dmypy.json
 
 # Scraped data
 data/*
+
+# chatPGT configuration
+config.json
