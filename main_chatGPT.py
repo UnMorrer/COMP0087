@@ -41,7 +41,7 @@ async def main():
                 folder_path="data/responses")
             
             # Wait between queries
-            wait_time = np.random.normal(loc=15, scale=5)
+            wait_time = np.random.normal(loc=16.7, scale=3)
             time.sleep(wait_time)
 
 if __name__ == "__main__":
