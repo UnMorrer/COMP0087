@@ -24,9 +24,8 @@ async def main():
 
     # Loop over messages
     for message_num in range(1, scrape_per_prompt):
-        prompt = prompts[prompt_num]
-
         for prompt_num in prompts.keys():
+            prompt = prompts[prompt_num]
             # Get answer
             answer = chat.ask(prompt)
             
@@ -42,7 +41,7 @@ async def main():
                 folder_path="data/responses")
             
             # Wait between queries
-            wait_time = np.random.normal(loc=10, scale=5)
+            wait_time = np.random.normal(loc=15, scale=5)
             time.sleep(wait_time)
 
 if __name__ == "__main__":
