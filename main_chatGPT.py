@@ -24,7 +24,7 @@ async def main():
             prompts[prompt_num] = f.read()
 
     # Loop over messages
-    for message_num in range(init, init+offeset):
+    for message_num in range(init, init+offset):
         for prompt_num in prompts.keys():
             prompt = prompts[prompt_num]
             # Get answer
