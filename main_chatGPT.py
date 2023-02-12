@@ -7,7 +7,7 @@ import asyncio
 import src.chatGPT.chatGPT as chatgpt
 import src.save.save_response as save
 
-scrape_per_prompt = 2500
+scrape_per_prompt = 3000
 
 async def main():
     """
@@ -23,7 +23,7 @@ async def main():
             prompts[prompt_num] = f.read()
 
     # Loop over messages
-    for message_num in range(0, scrape_per_prompt):
+    for message_num in range(55, scrape_per_prompt):
         for prompt_num in prompts.keys():
             prompt = prompts[prompt_num]
             # Get answer
