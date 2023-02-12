@@ -15,6 +15,7 @@ def main():
     with open("config/config.json") as f:
         config = json.loads(f.read())
     chat = chatgpt.Chatbot(config=config)
+    chat.ask("Hello!")
 
     prompts = {}
     for prompt_num in ["q1", "q2", "q7", "q8"]:

@@ -126,6 +126,18 @@ class Chatbot:
             data=json.dumps(data),
             timeout_seconds=180,
         )
+        # Make extra request to moderations api endpoint
+        moderations_data = {
+            "input":prompt,
+            "model":"text-moderation-playground",
+            "conversation_id":self.conversation_id,
+            "message_id":str(uuid.uuid4())
+        }
+        self.session.post(
+            url=BASE_URL + "backend-api/moderations",
+            data=json.dumps(moderations_data),
+            timeout_seconds=180,
+        )
         if response.status_code != 200:
             self.__login()
             raise Exception(
