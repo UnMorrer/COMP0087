@@ -163,6 +163,70 @@ class Chatbot:
             else:
                 return None
 
+    def generate_variant(
+        self,
+        prompt
+    ):
+        """
+        Ask a question to the chatbot
+        :param prompt: String
+
+        """
+        conversation_id = self.conversation_id
+        parent_id = (
+            self.parent_id
+            if conversation_id == self.conversation_id
+            else self.conversation_mapping[conversation_id]
+        )
+        data = {
+            "action": "variant",
+            "messages": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "role": "user",
+                    "content": {"content_type": "text", "parts": [prompt]},
+                },
+            ],
+            "conversation_id": conversation_id,
+            "parent_message_id": parent_id or str(uuid.uuid4()),
+            "model": "text-davinci-002-render",
+        }
+        self.conversation_id_prev_queue.append(
+            data["conversation_id"],
+        )  # for rollback
+        self.parent_id_prev_queue.append(data["parent_message_id"])
+        response = self.session.post(
+            url=BASE_URL + "backend-api/conversation",
+            data=json.dumps(data),
+            timeout_seconds=180,
+        )
+        if response.status_code != 200:
+            self.__login()
+            raise Exception(
+                f"Wrong response code: {response.status_code}! Refreshing session...",
+            )
+        else:
+            try:
+                response = response.text.splitlines()[-4]
+                response = response[6:]
+            except Exception as exc:
+                print("Incorrect response from OpenAI API")
+                raise Exception("Incorrect response from OpenAI API") from exc
+            # Check if it is JSON
+            if response.startswith("{"):
+                response = json.loads(response)
+                self.parent_id = response["message"]["id"]
+                self.conversation_id = response["conversation_id"]
+                message = response["message"]["content"]["parts"][0]
+                res = {
+                    "message": message,
+                    "conversation_id": self.conversation_id,
+                    "parent_id": self.parent_id,
+                }
+                return res
+            else:
+                return None
+
     def __check_response(self, response):
         if response.status_code != 200:
             print(response.text)
