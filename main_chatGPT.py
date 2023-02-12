@@ -23,7 +23,7 @@ async def main():
             prompts[prompt_num] = f.read()
 
     # Loop over messages
-    for message_num in range(1, scrape_per_prompt):
+    for message_num in range(0, scrape_per_prompt):
         for prompt_num in prompts.keys():
             prompt = prompts[prompt_num]
             # Get answer
