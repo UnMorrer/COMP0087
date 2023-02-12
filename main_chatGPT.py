@@ -1,21 +1,21 @@
 import json
 import numpy as np
 import time
+import asyncio
 
 # Custom packages
-import src.chatGPT.chatGPT_proxied as chatgpt
+import src.chatGPT.chatGPT as chatgpt
 import src.save.save_response as save
 
 scrape_per_prompt = 2500
 
-def main():
+async def main():
     """
     Runner/orchestration script for chatGPT scraping
     """
     with open("config/config.json") as f:
         config = json.loads(f.read())
-    chat = chatgpt.Chatbot(config=config)
-    chat.ask("Hello!")
+    chat = chatgpt.Chatbot(config["email"], config["password"])
 
     prompts = {}
     for prompt_num in ["q1", "q2", "q7", "q8"]:
@@ -23,36 +23,27 @@ def main():
             prompts[prompt_num] = f.read()
 
     # Loop over messages
-    for prompt_num in prompts.keys():
+    for message_num in range(1, scrape_per_prompt):
         prompt = prompts[prompt_num]
-        # Wait between queries
-        wait_time = np.random.normal(loc=70, scale=5)
-        time.sleep(wait_time)
 
-        # Get 1st answer
-        answer = chat.ask(prompt)
-
-        # Save answer
-        save.response(
-            string=text,
-            file_name=f"{prompt_num}_0.txt",
-            folder_path="data/responses")
-
-        for message_num in range(1, scrape_per_prompt):
-
-            # Wait between queries
-            wait_time = np.random.normal(loc=70, scale=5)
-            time.sleep(wait_time)
-
+        for prompt_num in prompts.keys():
             # Get answer
             answer = chat.ask(prompt)
-            text = answer["message"]
+            
+            # Print answer
+            text = ""
+            async for line in answer:
+                text += line["choices"][0]["text"].replace("<|im_end|>", "")
 
             # Save answer
             save.response(
                 string=text,
                 file_name=f"{prompt_num}_{message_num}.txt",
                 folder_path="data/responses")
+            
+            # Wait between queries
+            wait_time = np.random.normal(loc=10, scale=5)
+            time.sleep(wait_time)
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())
