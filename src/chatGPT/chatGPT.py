@@ -2,6 +2,7 @@
 A simple wrapper for the official ChatGPT API
 Source: https://github.com/acheong08/ChatGPT
 """
+
 import asyncio
 import json
 import os
@@ -115,8 +116,9 @@ class Chatbot:
     Handles everything seamlessly
     """
 
-    def __init__(self, email: str, password: str) -> None:
+    def __init__(self, email: str, password: str, paid: bool = False) -> None:
         self.api_key: str
+        self.paid: bool = paid
         self.conversations = Conversations()
         self.login(email, password)
 
@@ -163,6 +165,7 @@ class Chatbot:
             "top_p": float(os.environ.get("TOP_P") or 1),
             "stop": ["<|im_end|>", "<|im_sep|>"],
             "presence_penalty": float(os.environ.get("PRESENCE_PENALTY") or 1.0),
+            "paid": self.paid,
         }
 
     def login(self, email, password) -> None:
@@ -220,10 +223,15 @@ async def main():
         help="Your OpenAI password",
         required=True,
     )
+    parser.add_argument(
+        "--paid",
+        help="Use the paid API",
+        action="store_true",
+    )
     args = parser.parse_args()
 
     print("Logging in...")
-    chatbot = Chatbot(args.email, args.password)
+    chatbot = Chatbot(args.email, args.password, paid=args.paid)
     print("Logged in\n")
 
     print("Type '!help' to show a full list of commands")
