@@ -45,7 +45,7 @@ def main():
             time.sleep(wait_time)
 
             # Get answer
-            answer = chat.generate_variant(prompt)
+            answer = chat.ask(prompt)
             text = answer["message"]
 
             # Save answer
