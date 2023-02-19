@@ -6,7 +6,7 @@ import time
 import src.chatGPT.chatGPT as chatgpt
 import src.save.save_response as save
 
-init = 575
+init = 615
 offset = 425
 
 def main():
@@ -26,10 +26,9 @@ def main():
     for message_num in range(init, init+offset):
         for prompt_num in prompts.keys():
             prompt = prompts[prompt_num]
+
             # Get answer
-            for data in chat.ask(
-            prompt
-            ):
+            for data in chat.ask(prompt):
                 response = data["message"]
 
             # Save answer
