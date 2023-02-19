@@ -1,22 +1,21 @@
 import json
 import numpy as np
 import time
-import asyncio
 
 # Custom packages
 import src.chatGPT.chatGPT as chatgpt
 import src.save.save_response as save
 
-init = 70
-offset = 25
+init = 575
+offset = 425
 
-async def main():
+def main():
     """
     Runner/orchestration script for chatGPT scraping
     """
     with open("config/config.json") as f:
         config = json.loads(f.read())
-    chat = chatgpt.Chatbot(config["email"], config["password"])
+    chat = chatgpt.Chatbot(config)
 
     prompts = {}
     for prompt_num in ["q1", "q2", "q7", "q8"]:
@@ -28,16 +27,14 @@ async def main():
         for prompt_num in prompts.keys():
             prompt = prompts[prompt_num]
             # Get answer
-            answer = chat.ask(prompt)
-            
-            # Print answer
-            text = ""
-            async for line in answer:
-                text += line["choices"][0]["text"].replace("<|im_end|>", "")
+            for data in chat.ask(
+            prompt
+            ):
+                response = data["message"]
 
             # Save answer
             save.response(
-                string=text,
+                string=response,
                 file_name=f"{prompt_num}_{message_num}.txt",
                 folder_path="data/responses")
             
@@ -46,4 +43,4 @@ async def main():
             time.sleep(wait_time)
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    main()

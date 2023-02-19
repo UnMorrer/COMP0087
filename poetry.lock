@@ -251,14 +251,14 @@ wandb = ["numpy", "openpyxl (>=3.0.7)", "pandas (>=1.2.3)", "pandas-stubs (>=1.1
 
 [[package]]
 name = "OpenAIAuth"
-version = "0.1.0"
+version = "0.3.2"
 description = "OpenAI Authentication Reverse Engineered"
 category = "main"
 optional = false
 python-versions = "*"
 
 [package.dependencies]
-tls-client = "*"
+requests = "*"
 
 [[package]]
 name = "outcome"
@@ -551,7 +551,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "dde166076561256bef2a4133df87a42bddf190bcb59398dce32d3f861a51f089"
+content-hash = "5ed168a53d4ca863840fe5dc10c096c32a4e17b3ff299f5df80abd063913582c"
 
 [metadata.files]
 aiohttp = [
@@ -993,8 +993,8 @@ openai = [
     {file = "openai-0.26.5.tar.gz", hash = "sha256:2882a59c67ae33c2716a04389a6e6680d061f073424953732f917fde219addfd"},
 ]
 OpenAIAuth = [
-    {file = "OpenAIAuth-0.1.0-py3-none-any.whl", hash = "sha256:298d47d3ba6dc05e80bdf489c9cfc21f137edda8d8e7d8070e5448f1d2bae1ec"},
-    {file = "OpenAIAuth-0.1.0.tar.gz", hash = "sha256:5b812b2a976b8a9a2eaf4baf82ad4f28aa4a2bb784ef4410de5e27c648cf0928"},
+    {file = "OpenAIAuth-0.3.2-py3-none-any.whl", hash = "sha256:9947eff587a152d5adadc9f59cfb2ca0ecde71815445f0e251a137c4d458ed79"},
+    {file = "OpenAIAuth-0.3.2.tar.gz", hash = "sha256:08f701806bf144eebbec474f23794db495e4096ede97a37a37619e683a390295"},
 ]
 outcome = [
     {file = "outcome-1.2.0-py2.py3-none-any.whl", hash = "sha256:c4ab89a56575d6d38a05aa16daeaa333109c1f96167aba8901ab18b6b5e0f7f5"},
