@@ -127,3 +127,9 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Configuration for chatGPT scrape
+/config/config.json
+
+# Data folder
+/data
