@@ -3,8 +3,7 @@
 import os
 import pandas as pd
 
-file_folder = ["data", "essays.csv"]
 cwd = os.getcwd()
-file_path = os.path.join(cwd, file_folder)
+file_path = os.path.join(cwd, "data", "essays.csv")
 
 df = pd.read_csv(file_path)
