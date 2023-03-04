@@ -51,7 +51,7 @@ def load_chatGPT(
 
     for file in matching_files:
         with open(folder_path + file, "r") as file:
-            essays.append(file.readlines())
+            essays.append(file.read())
     
     return essays
 
