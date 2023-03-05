@@ -51,6 +51,7 @@ for text in gpt_answers:
 # [Name of Newspaper], [Your Name], [Name], [NAME], [name], [YOUR NAME], [your name], [Insert Newspaper Name], [a book], [to remove a book], [Editor]
 # + Gibbidy goo that is worth investigating
 # [one], [with], [the book that we abhor], [a]
+# Investigation: Inside quoted text
 
 # ChatGPT prompts/tokens (such as [Your Name])
 chatgpt_answers = df[df["model"] == "chatGPT"]["answer"].tolist()
