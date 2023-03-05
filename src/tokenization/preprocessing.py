@@ -3,6 +3,7 @@
 
 # Common libraries
 import re
+import torch
 import dateutil.parser as date_parser # https://github.com/dateutil/dateutil
 import transformers
 
@@ -94,7 +95,13 @@ def ai_text_preprocessor(text, tokenizer, model, conversion):
     cleaned_text = re.sub(" +", " ", cleaned_text)
 
     # Find named entities using ML
-    ml = transformers.pipeline("ner", model=model, tokenizer=tokenizer)
+    ml = transformers.pipeline(
+        "ner",
+        model=model,
+        tokenizer=tokenizer,
+        framework="pt",
+        device=0 if torch.cuda.is_available() else -1 #Enable GPU support
+    )
     results = ml(cleaned_text)
 
     # Replace entities found in reverse order

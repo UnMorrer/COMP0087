@@ -51,7 +51,7 @@ for df, name in zip(data, names):
     for answer, generated_indicator in zip(answers, generated):
         # Select appropriate preprocessor
         if generated_indicator:
-            preproc_answer = preproc.ai_text_preprocessing(
+            preproc_answer = preproc.ai_text_preprocessor(
                 answer,
                 model=model,
                 tokenizer=tokenizer,
