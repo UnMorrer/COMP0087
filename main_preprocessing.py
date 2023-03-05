@@ -71,4 +71,4 @@ for df, name in zip(data, names):
 
     # Save df
     filename = save_folder + name + ".csv"
-    df.to_csv()
+    df.to_csv(filename)
