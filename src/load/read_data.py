@@ -8,7 +8,7 @@ def merged_data():
     OS-agnostic function to load merged data
     """
     cwd = os.getcwd()
-    file_path = os.path.join(cwd, "data", "essays.csv")
+    file_path = os.path.join(cwd, "data", "essays_raw.csv")
 
     df = pd.read_csv(file_path, index_col=0)
 
