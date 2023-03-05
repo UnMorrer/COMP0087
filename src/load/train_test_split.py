@@ -1,5 +1,5 @@
 # Load train, test and validation dataset using pandas dataframe
-import read_data as read
+import src.load.read_data as read
 import pandas as pd
 import numpy as np
 
