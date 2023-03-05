@@ -4,12 +4,11 @@
 # Common libraries
 import re
 import dateutil.parser as date_parser # https://github.com/dateutil/dateutil
-import transformers as trfs
+import transformers
 
 # Custom packages
 
-
-def human_text_preprocessing(text):
+def human_text_preprocessor(text):
     """
     Function to pre-process human essays. This re-codes a number
     of masks used in the original dataset, as outlined below:
@@ -50,7 +49,7 @@ def human_text_preprocessing(text):
     return cleaned_text
 
 
-def ai_text_preprocessing(text):
+def ai_text_preprocessor(text, tokenizer, model, conversion):
     """
     Function to pre-process Ai-written essays. This extracts
     a number of useful masks, based on Named Entity Recognition (NER)
@@ -80,6 +79,10 @@ def ai_text_preprocessing(text):
 
     Inputs:
     Text - str: The AI-written essay text
+    tokenizer - transformers tokenizer
+    model - transformers model
+    -> Above 2 used to derive NER predictions
+    conversion - dict: Entity token conversions from model
 
     Returns:
     Cleaned_Text - str: The AI-written essay text
@@ -91,6 +94,15 @@ def ai_text_preprocessing(text):
     cleaned_text = re.sub(" +", " ", cleaned_text)
 
     # Find named entities using ML
+    ml = transformers.pipeline("ner", model=model, tokenizer=tokenizer)
+    results = ml(cleaned_text)
+
+    # Replace entities found in reverse order
+    for ne in reversed(results):
+        start_char = ne["start"]
+        end_char = ne["end"]
+        entity_token = conversion[ne["entity"]]
+        cleaned_text = cleaned_text[:start_char] + entity_token + cleaned_text[end_char:]
 
     # Replace [Your name] and other prompts with mask
     newspaper_regex = re.compile(r"\[.*newspaper.*\]", re.IGNORECASE)
