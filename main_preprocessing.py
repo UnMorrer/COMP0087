@@ -28,7 +28,7 @@ entity_conversions = {
     "B-MISC": "@MISC",
     "I-MISC": ""
 }
-save_folder = os.getcwd() + "/data/"
+save_folder = os.getcwd() + "/data/essays_"
 
 ###########
 # Actual code
