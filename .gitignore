@@ -131,8 +131,11 @@ dmypy.json
 # Configuration for chatGPT scrape
 /config/config.json
 
-# Data folder
-/data
-
 # VS Code configuration
 /.vscode
+
+# Scraped data
+data/*
+
+# chatPGT configuration
+config/config.json
