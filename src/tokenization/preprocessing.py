@@ -1,4 +1,4 @@
-# Previous work: ner.py
+# Previous work: ner_experimentation.py
 # Script that masks named entities in generated text
 
 import transformers as trfs
