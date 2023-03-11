@@ -127,3 +127,15 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# Configuration for chatGPT scrape
+/config/config.json
+
+# VS Code configuration
+/.vscode
+
+# Scraped data
+data/*
+
+# chatPGT configuration
+config/config.json
