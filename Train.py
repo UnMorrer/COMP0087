@@ -3,7 +3,7 @@ from torch import nn
 from torch.optim import Adam
 from Data_Loader import Data_Loader, TextDataset
 from Models import LSTM
-from bert_hf import tokenize_input
+from src.tokenization.general_hf_tokenizer import tokenize_input
 
 train_path = r'C:\Users\tducr\Music\UCL\Term2\COMP0087\project\Data set\play\essays_train.csv'
 #hyperparameters
