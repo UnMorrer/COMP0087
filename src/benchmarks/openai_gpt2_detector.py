@@ -44,11 +44,11 @@ def get_batch_inference(
     return probs # fake, real
 
 if __name__ == "__main__":
-model_name = "roberta-base"
-get_batch_inference(
-    ["This is an example sentence.", "This is yet another example sentence."],
-    RobertaForSequenceClassification.from_pretrained(model_name).to(device),
-    RobertaTokenizer.from_pretrained(model_name),
-    10,
-    device
-)
+    model_name = "roberta-base"
+    get_batch_inference(
+        ["This is an example sentence.", "This is yet another example sentence."],
+        RobertaForSequenceClassification.from_pretrained(model_name).to(device),
+        RobertaTokenizer.from_pretrained(model_name),
+        10,
+        device
+    )
