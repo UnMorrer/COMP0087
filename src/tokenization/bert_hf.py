@@ -20,11 +20,16 @@ def tokenize_input(text,
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     encoded_input = tokenizer(text, return_tensors=tensor_framework)
 
+    token_ids = encoded_input.data["input_ids"]
+    model = BertModel.from_pretrained("bert-base-uncased")
+    embedding_matrix = model.embeddings.word_embeddings.weight
+    vector_rep = embedding_matrix[token_ids]
+
     # TODO: Update code
     # TODO: Implement padding & truncation
     # TODO: Batch size - aware of batching
 
-    return encoded_input
+    return vector_rep
 
 if __name__ == "__main__":
     from transformers import BertModel
