@@ -2,6 +2,7 @@
 from transformers import BertTokenizer
 
 def tokenize_input(text,
+                   num_tokens,
                    tensor_framework="pt"):
     """
     Simple wrapper for BERT tokenization
@@ -13,10 +14,15 @@ def tokenize_input(text,
 
     Returns:
     encoded_input - :
+    PyTorh tensors: [batch_size x num_tokens x 768]
     """
 
     tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     encoded_input = tokenizer(text, return_tensors=tensor_framework)
+
+    # TODO: Update code
+    # TODO: Implement padding & truncation
+    # TODO: Batch size - aware of batching
 
     return encoded_input
 
@@ -39,6 +45,8 @@ if __name__ == "__main__":
     """
 
     result = tokenize_input(essay)
+    token_ids = result.data["input_ids"]
     model = BertModel.from_pretrained("bert-base-uncased")
     embedding_matrix = model.embeddings.word_embeddings.weight
+    vector_rep = embedding_matrix[token_ids]
     a = 1
