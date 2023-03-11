@@ -14,7 +14,7 @@ class TextDataset(Dataset):
         question = self.df.iloc[idx]['question']
 
         return {'input_ids': text, 'label': label, 'question': question}
-class DataLoader:
+class Data_Loader:
     def __init__(self, dataset, batch_size=1, shuffle=False):
         self.dataset = dataset
         self.batch_size = batch_size
@@ -25,3 +25,8 @@ class DataLoader:
 
     def __len__(self):
         return len(self.dataset) // self.batch_size
+# data=Data_Loader(TextDataset(r'C:\Users\tducr\Music\UCL\Term2\COMP0087\project\Data set\play\essays_train.csv'), batch_size = 64, shuffle=False)
+# idata = iter(data)
+# a=next(idata)
+# b=next(idata)
+# c=1
