@@ -10,7 +10,7 @@ def create_test_train_split(
     replacement = False,
     n = 900,
     train_frac = 0.7,
-    test_frac = 0.2
+    validation_frac = 0.2
 ):
     """
     Function to create balanced sample + test/train/validation splitm from data
@@ -22,7 +22,7 @@ def create_test_train_split(
     replacement - bool: Is sampling done with replacement?
     n - int: Number of samples for each question x ai/human cross-section
     train_frac - float: Proportion of training samples (train num: n x train_frac)
-    test_frac - float: Proportion of testing samples 
+    validation_frac - float: Proportion of validation samples 
 
     Returns:
     train_df, test_df, validation_df
@@ -30,7 +30,7 @@ def create_test_train_split(
 
     """
     # Train, test, (validation) proportions
-    validation_frac = 1 - train_frac - test_frac # What is left
+    test_frac = 1 - train_frac - validation_frac # What is left
 
     df = read.merged_data()
     sample_df = pd.DataFrame()
@@ -45,10 +45,10 @@ def create_test_train_split(
             sample_df = pd.concat([ai_full_sample, human_full_sample, sample_df])
     
     # Create train/test split
-    train, test, validate = np.split(
+    train, validate, test = np.split(
         sample_df.sample(frac=1, random_state=random_seed),
         [int(train_frac*len(sample_df)), int((train_frac + test_frac)*len(sample_df))]
         )
 
     # Return results
-    return train, test, validate
+    return train, validate, test
