@@ -5,6 +5,8 @@ from Data_Loader import Data_Loader, TextDataset
 from Models import LSTM
 from src.tokenization.general_hf_tokenizer import tokenize_input
 
+device=0 if torch.cuda.is_available() else -1 #Enable GPU support
+
 train_path = r'C:\Users\tducr\Music\UCL\Term2\COMP0087\project\Data set\play\essays_train.csv'
 test_path = r'C:\Users\tducr\Music\UCL\Term2\COMP0087\project\Data set\play\essays_test.csv'
 #hyperparameters
@@ -13,10 +15,10 @@ trainloader=Data_Loader(TextDataset(train_path), batch_size=batch_size, shuffle=
 testloader = Data_Loader(TextDataset(test_path), batch_size=batch_size, shuffle=False)
 max_number_of_tokens = 750
 input_siz = 768
-network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1)#to be changed
+network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1).to(device)#to be changed
 number_of_epochs = 100
-optimizer = Adam(network.parameters(), lr=0.001)
-criteron = nn.CrossEntropyLoss()
+optimizer = Adam(network.parameters(), lr=0.001).to(device)
+criteron = nn.CrossEntropyLoss().to(device)
 
 for epoch in range(number_of_epochs):
     cum_loss = 0
@@ -37,5 +39,4 @@ for epoch in range(number_of_epochs):
         loss = criteron(pred.squeeze(-1), batch['label'].float())
         test_cum_loss += loss.item()
     print(f'Epoch {epoch} test loss: {test_cum_loss.item()/len(testloader)}')
-torch.save(network.state_dict(), f'Model.pt')
-        
+torch.save(network.state_dict(), f'Model.pt')  
