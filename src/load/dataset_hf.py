@@ -42,6 +42,7 @@ def read_in(
 
     # Take random sample 
     if sample:
-        data = data.select(range(sample_size))
+        for k in data.keys():
+            data[k] = data[k].select(range(sample_size))
     
     return data

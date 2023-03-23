@@ -36,6 +36,77 @@ def tokenize_input(text,
 
     return vector_rep
 
+
+def tokenizer_function(input_text,
+                       tokenizer,
+                       max_length=0,
+                       padding="right",
+                       truncation="end"):
+    """
+    Function to tokenize input. Returns function
+    so that map() can be applied. Figures out batch size automatically.
+
+    Inputs:
+    input_text - [str]: List of string inputs
+    to pass down to tokenizer
+    tokenizer - hf.Tokenizer: Tokenizer for model
+    max_length - int: Maximal number of tokens
+    per sentence. Defaults to 0 (all tokens)
+    padding - str: padding direction. "right" pads
+    the end of the sentence to reach max_length tokens.
+    "left" pads the beginning of the sentence to reach
+    max_tokens length
+    padding_token - int: Token ID for padding token
+    truncation - str: Truncation direction. "end" removes
+    tokens from the end when sentences are too long. "beginning"
+    removes tokens from the beginning when they are too long
+
+    Returns:
+    tokens - [int]: List of integers, containing token IDs.
+    """
+
+    # Determine if padding/truncation is required
+    if max_length == 0:
+        return tokenizer(input_text["answer"])
+    
+    # Handle padding & truncation
+    tokens = tokenizer(input_text["answer"])
+    batch_size = len(tokens["input_ids"])
+    padding_token=tokenizer.pad_token_id
+
+    # Per-input based padding/truncation
+    for i in range(batch_size):
+        length = len(tokens["input_ids"][i])
+
+        # Padding required
+        if length < max_length:
+            if padding.lower() == "right":
+                tokens["input_ids"][i] = tokens["input_ids"][i] + (max_length - length) * [padding_token]
+                tokens["attention_mask"][i] = tokens["attention_mask"][i] + (max_length - length) * [0]
+
+            elif padding.lower() == "left":
+                tokens["input_ids"][i] = (max_length - length) * [padding_token] + tokens["input_ids"][i]
+                tokens["attention_mask"][i] = (max_length - length) * [0] + tokens["attention_mask"][i]
+
+            else:
+                raise ValueError(f"Invalid value for padding: {padding}. Please use 'left' or 'right' instead.")
+
+        # Truncation required
+        elif length > max_length:
+            if truncation.lower() == "end":
+                tokens["input_ids"][i] = tokens["input_ids"][i][:max_length]
+                tokens["attention_mask"][i] = max_length * [1]
+
+            elif truncation.lower() == "beginning":
+                tokens["input_ids"][i] = tokens["input_ids"][i][length-max_length:]
+                tokens["attention_mask"][i] = max_length * [1]
+            
+            else:
+                raise ValueError(f"Invalid value for truncation: {truncation}. Please use 'end' or 'beginning' instead.")
+        
+    # Return result
+    return tokens
+
 if __name__ == "__main__":
     # Example usage
     from transformers import BertModel, BertTokenizer
