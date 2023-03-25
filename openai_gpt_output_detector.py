@@ -42,8 +42,8 @@ with torch.no_grad():
 
 # Get probabilities
 fake = probs.detach().cpu()[:, 0]
-real = probs.detach().cpu()[:, 1]
+ground_truth = tokenized_data["generated"]
 
-# Get label & compare
+# Compare & get number of correct predictions
 
 a = 1
