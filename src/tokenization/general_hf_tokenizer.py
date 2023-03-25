@@ -122,3 +122,7 @@ if __name__ == "__main__":
         BertTokenizer.from_pretrained('bert-base-uncased'),
         BertModel.from_pretrained("bert-base-uncased")
         )
+    
+    # Usage of tokenizer_function
+    token_func = lambda x: tokenizer_function(x, tokenizer=BertTokenizer, max_length=16)
+    tokenized_data = map(token_func, text)

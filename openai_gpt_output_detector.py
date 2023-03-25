@@ -10,7 +10,7 @@ import src.tokenization.general_hf_tokenizer as token_utils
 model_name = "roberta-base" # "roberta-large"
 data = load_data.read_in(
     sample=True,
-    sample_size=500
+    sample_size=100
     )["validation"]
 max_tokens = 512
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
