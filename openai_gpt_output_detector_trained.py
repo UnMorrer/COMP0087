@@ -1,8 +1,10 @@
+# NOTE: ABANDONED - Model doesn't expose/return loss - hence cannot be fine-tuned easily later down the line
+
 # Base packages
 import torch
 import numpy as np
 import matplotlib.pyplot as plt
-from transformers import RobertaForSequenceClassification, RobertaTokenizer
+from transformers import RobertaForSequenceClassification, RobertaTokenizer, Trainer, TrainingArguments
 
 # Custom code
 import src.load.dataset_hf as load_data
@@ -19,6 +21,9 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 plot_bins = 25
 save_histogram = True
 histogram_filepath = "visualizations/openai_trained_prob_distributions.png"
+train_batch_size = 16
+eval_batch_size = 64
+epochs = 50
 
 # Prediction pipeline
 model = RobertaForSequenceClassification.from_pretrained(model_name).to(device)
@@ -29,15 +34,44 @@ tokenizer = RobertaTokenizer.from_pretrained(
     max_length=max_tokens
 )
 
-# Train - test data split
-train_set = data["train"]
-eval_set = data["validation"]
+# Tokenization
+tokenizer_function = lambda x: token_utils.tokenizer_function(x["answer"],tokenizer=tokenizer,max_length=max_tokens)
 
-# Iterating over batches of answer for model inference
-dataloader = torch.utils.data.DataLoader(
-    data.select_columns(["answer", "generated", "index"]),
-    batch_size=100,
-    pin_memory=True)
+train_data = data["train"]
+tokenized_train = train_data.map(tokenizer_function, batched=True, batch_size=train_batch_size)
+
+eval_data = data["validation"]
+tokenized_eval = eval_data.map(tokenizer_function, batched=True, batch_size=eval_batch_size)
+
+# Define the training arguments
+training_args = TrainingArguments(
+    output_dir='./results',          # output directory
+    num_train_epochs=epochs,              # total number of training epochs
+    warmup_steps=10,                # number of warmup steps for learning rate scheduler
+    weight_decay=0.01,               # strength of weight decay
+    evaluation_strategy='epoch',     # evaluation strategy to adopt during training
+    gradient_checkpointing=True,      # to save GPU memory
+    per_device_train_batch_size=train_batch_size,  # batch size per device during training
+    per_device_eval_batch_size=eval_batch_size,   # batch size for evaluation
+)
+
+# Define the trainer
+trainer = Trainer(
+    model=model,                      # the instantiated Transformers model to be trained
+    args=training_args,               # training arguments, defined above
+    train_dataset=tokenized_train,         # training dataset
+    eval_dataset=tokenized_eval     # evaluation dataset
+)
+
+# Train the model
+trainer.train()
+
+# Dataloader for final evaluation
+eval_dataloader = torch.utils.data.DataLoader(
+    data["validation"].select_columns(["answer", "generated"]),
+    batch_size=eval_batch_size,
+    pin_memory=True
+)
 
 # Keeping track of correct preds
 probabilities = []
@@ -45,7 +79,7 @@ labels = []
 correct_preds = 0
 i = 0
 
-for batch in dataloader:
+for batch in eval_dataloader:
     # Print batch information
     i += 1
     print(f"Working on batch num: {i}")
