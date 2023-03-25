@@ -141,4 +141,4 @@ data/*
 config/config.json
 
 # Visualizations
-src/visualizations
+visualizations

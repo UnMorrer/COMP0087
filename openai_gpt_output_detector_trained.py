@@ -2,6 +2,7 @@
 import torch
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
 from transformers import RobertaForSequenceClassification, RobertaTokenizer
 
 # Custom code
@@ -16,6 +17,9 @@ data = load_data.read_in(
     )["validation"]
 max_tokens = 512
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
+plot_bins = 25
+save_histogram = True
+histogram_filepath = "visualizations/openai_base_prob_distributions.png"
 
 # Prediction pipeline
 model = RobertaForSequenceClassification.from_pretrained(model_name).to(device)
@@ -77,9 +81,67 @@ for batch in dataloader:
 df = pd.DataFrame(
         {
             "probs": probabilities,
-            "labels": labels,
+            "generated": labels,
         }
     )
 
-# TODO: Graph
-a = 1
+# Plotting data on histogram
+
+# define data
+probs_gen = df[df["generated"] == True]["probs"]
+probs_real = df[df["generated"] == False]["probs"]
+
+# initialize figure with subplots
+fig, (ax0, ax1) = plt.subplots(nrows=1, ncols=2, sharex=True, sharey=True)
+
+# create first histogram and mean line
+n0, bins0, patches0 = ax0.hist(
+    probs_gen,
+    bins=20,
+    density=True,
+    histtype='bar',
+    color="tab:blue")
+mean0 = np.mean(probs_gen)
+ax0.axvline(x=mean0, color='r', linestyle='--', linewidth=2)
+ax0.text(
+    mean0,
+    1.1 * np.max(n0),
+    f"Mean: {mean0:.4f}",
+    horizontalalignment='center')
+
+# create second histogram and mean line
+n1, bins1, patches1 = ax1.hist(
+    probs_real,
+    bins=20,
+    density=True,
+    histtype='bar',
+    color="tab:orange")
+mean1 = np.mean(probs_real)
+ax1.axvline(x=mean1, color='r', linestyle='--', linewidth=2)
+ax1.text(
+    mean1,
+    1.1 * np.max(n1),
+    f"Mean: {mean1:.4f}",
+    horizontalalignment='center')
+
+# set titles and labels
+ax0.set_title("Generated essays")
+ax1.set_title("Real essays")
+ax0.set_xlabel("Fake probability")
+ax1.set_xlabel("Fake probability")
+ax0.set_ylabel("Density")
+
+# set common X and Y limits
+xmin = min(np.min(bins0), np.min(bins1))
+xmax = max(np.max(bins0), np.max(bins1))
+ymin = 0
+ymax = max(np.max(n0), np.max(n1))
+ax0.set_xlim([xmin, xmax])
+ax0.set_ylim([ymin, ymax])
+
+# display plot
+fig.tight_layout()
+plt.show()
+
+if save_histogram:
+    plt.savefig(histogram_filepath)
