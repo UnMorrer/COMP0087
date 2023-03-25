@@ -1,6 +1,7 @@
 # Base packages
 import torch
 import numpy as np
+import pandas as pd
 from transformers import RobertaForSequenceClassification, RobertaTokenizer
 
 # Custom code
@@ -12,7 +13,7 @@ import src.evaluation.utils as eval_utils
 model_name = "roberta-base" # "roberta-large"
 data = load_data.read_in(
     sample=False
-    )["train"]
+    )["validation"]
 max_tokens = 512
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 
@@ -33,6 +34,7 @@ dataloader = torch.utils.data.DataLoader(
 
 # Keeping track of correct preds
 probabilities = []
+labels = []
 correct_preds = 0
 i = 0
 
@@ -67,10 +69,17 @@ for batch in dataloader:
     correct = eval_utils.num_correct_predictions(fake, ground_truth)
 
     # Save correct preds and probs
+    labels += np.array(batch["generated"]).tolist()
     correct_preds += correct
     probabilities += fake.tolist()
 
 # Post - session analysis
+df = pd.DataFrame(
+        {
+            "probs": probabilities,
+            "labels": labels,
+        }
+    )
 
 # TODO: Graph
 a = 1
