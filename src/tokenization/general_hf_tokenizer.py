@@ -107,6 +107,32 @@ def tokenizer_function(input_text,
     # Return result
     return tokens
 
+
+def get_vector_representation(
+        token_ids,
+        model):
+    """
+    Function to get vector representation of/for set input IDs.
+    Intended to compliment functionality of tokenizer_function
+    (see above).
+
+    Inputs:
+    input_ids - [int]: List of input IDs that correspond uniquely
+    to tokens, such as those returned by transformers tokenizers.
+    model - transformers.model: An initialized model from the
+    transformers library that corresponds to the tokenizer used.
+    Weights can then be extracted from this model to use.
+
+    Returns:
+    vector_rep - torch.tensor: A <batch_size> x <model_hidden_rep>
+    size tensor that contains the hidden vector representations
+    for each token in all of the essays in the batch
+    """
+    embedding_matrix = model.embeddings.word_embeddings.weight
+    vector_rep = embedding_matrix[token_ids]
+
+    return vector_rep
+
 if __name__ == "__main__":
     # Example usage
     from transformers import BertModel, BertTokenizer
@@ -126,3 +152,6 @@ if __name__ == "__main__":
     # Usage of tokenizer_function
     token_func = lambda x: tokenizer_function(x, tokenizer=BertTokenizer, max_length=16)
     tokenized_data = map(token_func, text)
+
+    # Usage of get_vector_representation
+    vector_rep = get_vector_representation(tokenized_data["input_ids"], BertModel.from_pretrained("bert-base-uncased"))
