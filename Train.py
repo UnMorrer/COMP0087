@@ -14,6 +14,7 @@ batch_size = 16
 trainloader=Data_Loader(TextDataset(train_path), batch_size=batch_size, shuffle=False)
 testloader=Data_Loader(TextDataset(test_path), batch_size=batch_size, shuffle=False)
 tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+tokennizer_model = BertModel.from_pretrained('bert-base-uncased')
 max_number_of_tokens = 750
 input_siz = 768
 network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1)#to be changed
@@ -28,7 +29,7 @@ for epoch in range(number_of_epochs):
     cum_loss = 0
     for idx, batch in enumerate(trainloader):
         optimizer.zero_grad()
-        tokenized_batched = tokenize_input(text = batch['input_ids'],num_tokens = max_number_of_tokens, model = BertModel.from_pretrained('bert-base-uncased'), tokenizer = tokenizer)
+        tokenized_batched = tokenize_input(text = batch['input_ids'],num_tokens = max_number_of_tokens, model = tokennizer_model, tokenizer = tokenizer)
         pred = network(tokenized_batched)
         loss = criteron(pred.squeeze(-1), batch['label'].float())
         loss.backward()
