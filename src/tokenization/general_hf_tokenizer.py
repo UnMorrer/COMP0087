@@ -67,10 +67,10 @@ def tokenizer_function(input_text,
 
     # Determine if padding/truncation is required
     if max_length == 0:
-        return tokenizer(input_text["answer"])
+        return tokenizer(input_text)
     
     # Handle padding & truncation
-    tokens = tokenizer(input_text["answer"])
+    tokens = tokenizer(input_text)
     batch_size = len(tokens["input_ids"])
     padding_token=tokenizer.pad_token_id
 

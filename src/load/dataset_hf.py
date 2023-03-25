@@ -10,7 +10,6 @@ def read_in(
     sample : bool,
     sample_size=1000,
     data_files=data_files,
-    streaming=False,
     random_seed=42
 ):
     """
@@ -23,9 +22,6 @@ def read_in(
     sample_size - int: Size of sample (if sampled)
     data_files - dict(str): List of data files
     and their relative name/location as stored on disk
-    streaming - bool: When set to True, returns an 
-    iterable that can be used to get <batch_size> long
-    samples from the full dataset.
     random_seed - int: Random seed for sampling
 
     Returns:
