@@ -1,7 +1,6 @@
 # Base packages
 import torch
 import numpy as np
-import pandas as pd
 import matplotlib.pyplot as plt
 from transformers import RobertaForSequenceClassification, RobertaTokenizer
 
@@ -14,12 +13,12 @@ import src.evaluation.utils as eval_utils
 model_name = "roberta-base" # "roberta-large"
 data = load_data.read_in(
     sample=False
-    )["validation"]
+    )
 max_tokens = 512
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
 plot_bins = 25
 save_histogram = True
-histogram_filepath = "visualizations/openai_base_prob_distributions.png"
+histogram_filepath = "visualizations/openai_trained_prob_distributions.png"
 
 # Prediction pipeline
 model = RobertaForSequenceClassification.from_pretrained(model_name).to(device)
@@ -29,6 +28,10 @@ tokenizer = RobertaTokenizer.from_pretrained(
     truncation=True,
     max_length=max_tokens
 )
+
+# Train - test data split
+train_set = data["train"]
+eval_set = data["validation"]
 
 # Iterating over batches of answer for model inference
 dataloader = torch.utils.data.DataLoader(
