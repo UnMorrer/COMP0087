@@ -129,7 +129,7 @@ def get_vector_representation(
     for each token in all of the essays in the batch
     """
     embedding_matrix = model.embeddings.word_embeddings.weight
-    vector_rep = embedding_matrix[token_ids]
+    vector_rep = embedding_matrix[token_ids, ]
 
     return vector_rep
 
