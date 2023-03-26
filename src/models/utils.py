@@ -178,7 +178,7 @@ def model_trainer(
         # Checkpoint saving
         if checkpoints_enabled and epoch % epochs_per_checkpoint == 0:
             model_save_path = os.path.join(
-                os.getcw(),
+                os.getcwd(),
                 model_save_dir, 
                 model_save_name + f"_epoch{epoch}")
             torch.save(model.state_dict(), model_save_path)
@@ -188,7 +188,7 @@ def model_trainer(
         if accuracy > best_eval_accuracy:
             print(f"New accuracy record: {accuracy}")
             model_save_path = os.path.join(
-                os.getcw(),
+                os.getcwd(),
                 model_save_dir, 
                 model_save_name + "_best")
             torch.save(model.state_dict(), model_save_path)

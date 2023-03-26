@@ -12,7 +12,7 @@ import src.models.utils as model_utils
 input_size = 768 # size of the BERT-encoded input
 hidden_size = 128
 num_classes = 2
-num_epochs = 50
+num_epochs = 1
 max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
@@ -25,7 +25,8 @@ model = bert.RNNConnected(
     hidden_size,
     num_classes,
     batch_size,
-    max_tokens
+    max_tokens,
+    device="cuda"
     )
 optimizer = torch.optim.Adam
 
@@ -43,8 +44,8 @@ model_utils.model_trainer(
     optimizer_object=optimizer,
     learning_rate=lr,
     max_essay_tokens=max_tokens,
-    model_save_name="example",
-    training_device='cpu',
+    model_save_name="bert_rnn",
+    training_device="cuda",
     padding_strategy="right",
     truncation_strategy="end",
     checkpoints_enabled=False,
