@@ -6,6 +6,7 @@ from Data_Loader import Data_Loader, TextDataset
 from Models import LSTM, RNN, Transformer
 from src.tokenization.general_hf_tokenizer import tokenize_input
 from transformers import BertTokenizer, BertModel
+import re
 def Train():
     device='cuda' if torch.cuda.is_available() else 'cpu'
     # train_path = r'.\data\essays_train.csv'
@@ -20,6 +21,15 @@ def Train():
     max_number_of_tokens = 750
     input_siz = 768
     network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1, device = device)#to be changed
+    list_of_files = os.listdir()
+    weights_files = []
+    for file in list_of_files:
+        if file.startswith('Model-LSTM-Epoch'):
+            weights_files.append(file)
+    if weights_files != []:
+        weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
+        network.load_state_dict(torch.load(weights_files[-1]))
+        epoch = int(weights_files[-1].split('Epoch')[1].split('.')[0])
     # network = RNN (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1)#to be changed
     # network = nn.Transformer ()#to be changed
     # network = BertModel.from_pretrained('bert-base-uncased')#to be changed
@@ -41,6 +51,7 @@ def Train():
             cum_loss += loss.item()
             optimizer.step()
         print(f'Epoch {epoch} train loss: {cum_loss/len(trainloader)}')
+        torch.save(network.state_dict(), f'Model-LSTM-Epoch{epoch}.pt')
         test_cum_loss = 0
         for idx, batch in enumerate(testloader):
             tokenized_batched = tokenize_input(text = batch['input_ids'],num_tokens = max_number_of_tokens, model = tokennizer_model, tokenizer = tokenizer)
@@ -50,7 +61,6 @@ def Train():
             loss = criteron(pred.squeeze(-1), batch['label'].float())
             test_cum_loss += loss.item()
         print(f'Epoch {epoch} test loss: {test_cum_loss/len(testloader)}')
-    torch.save(network.state_dict(), f'Model.pt')
 if __name__ == '__main__':
     Train()
         
