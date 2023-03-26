@@ -1,13 +1,12 @@
-# Orchestration for BERT LSTM model
+# Orchestration for BERT RNN model
 
 # Base packages
 import torch
-import numpy as np
 from transformers import BertTokenizer, BertModel
 
 # Custom packages
 import src.models.bert as bert
-import src.models.model_trainer as model_utils
+import src.models.utils as model_utils
 
 # Settings
 input_size = 768 # size of the BERT-encoded input
@@ -18,7 +17,7 @@ max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
 epochs = 50
-lr = 0.1
+lr = 0.00001
 
 # Model-related things
 model = bert.RNNConnected(
@@ -35,7 +34,7 @@ tokenizer = BertTokenizer.from_pretrained(tokenizer_model_name)
 tokenizer_model = BertModel.from_pretrained(tokenizer_model_name)
 
 # Call model trainer function
-model_trainer(
+model_utils.model_trainer(
     torch_model_object=model,
     batch_size=batch_size,
     epochs=num_epochs,
