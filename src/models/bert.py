@@ -6,6 +6,12 @@ class FullyConnected(nn.Module):
     def __init__(self, input_size, hidden_size, num_classes):
         super(FullyConnected, self).__init__()
         # Define the layers of the neural network
+
+        # RNN that runs through the 512-long embedding
+        # and gets overall "meaning" out
+
+        # Pooling
+
         self.fc1 = nn.Linear(input_size, hidden_size)
         self.fc2 = nn.Linear(hidden_size, hidden_size)
         self.fc3 = nn.Linear(hidden_size, num_classes)
@@ -17,7 +23,7 @@ class FullyConnected(nn.Module):
         x = self.fc3(x)
         return x
     
-    def loss_fn(self, outputs, targets):
+    def loss(self, outputs, targets):
         # Define the loss function
         loss = nn.BCEWithLogitsLoss()
         return loss(outputs, targets)

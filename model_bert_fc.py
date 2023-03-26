@@ -5,7 +5,7 @@ import torch
 from transformers import BertTokenizer, BertModel
 
 # Custom packages
-import models.bert as bert
+import src.models.bert as bert
 import src.load.dataset_hf as load_data
 import src.tokenization.general_hf_tokenizer as token_utils
 
@@ -69,8 +69,8 @@ for epoch in range(num_epochs):
         ).to(device)
         # Shape of input_vectors:
         # <batch_size> x <num_tokens> x <encoding_size>
-        outputs = model(input_vectors)
-        loss = model.loss_fn(outputs, targets)
+        probs = model(input_vectors)
+        loss = model.loss(probs, batch["generated"])
         loss.backward()
         optimizer.step()
 
