@@ -39,7 +39,8 @@ eval_dataloader = torch.utils.data.DataLoader(
 )
 
 # Model-related things
-model = bert.FullyConnected(input_size, hidden_size, num_classes).to(device)
+model = bert.RNNConnected(
+    input_size, hidden_size, num_classes).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # Tokenization
