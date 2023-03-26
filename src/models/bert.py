@@ -34,11 +34,11 @@ class RNNConnected(nn.Module):
 
         # Keep track of RNN hidden states
         if init_hidden_state is None:
-            self.h = torch.zeros(self.bidirectional_multiplier*rnn_layers,
+            self.hidden = torch.zeros(self.bidirectional_multiplier*rnn_layers,
                                  batch_size,
                                  hidden_size).to(device)
         else:
-            self.f = init_hidden_state.to(device)
+            self.hidden = init_hidden_state.to(device)
 
         # Linear/Dense/Fully Connected layer for RNN output
         self.fc = nn.Linear(
@@ -51,14 +51,17 @@ class RNNConnected(nn.Module):
         
     def forward(self, x):
         # Define the forward pass of the neural network
-        x, self.h = self.rnn(x, self.h) # Run thru RNN + update hidden state
+        x, self.hidden = self.rnn(x, self.hidden) # Run thru RNN + update hidden state
         x = x.flatten(1)  # flatten X to feed into Linear layer
         x = self.fc(x)
+
+        # Detach the hidden state
+        self.hidden = self.hidden.detach()
         return x
     
     def predict(self, x):
         with torch.no_grad():
-            x, _ = self.rnn(x, self.h) # Run thru RNN
+            x, _ = self.rnn(x, self.hidden) # Run thru RNN
             x = x.flatten(1)  # flatten X to feed into Linear layer
             x = self.fc(x)
             x = F.softmax(x, dim=1) # Convert to probabilities
