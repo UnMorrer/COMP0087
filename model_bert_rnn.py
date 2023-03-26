@@ -7,9 +7,7 @@ from transformers import BertTokenizer, BertModel
 
 # Custom packages
 import src.models.bert as bert
-import src.load.dataset_hf as load_data
-import src.tokenization.general_hf_tokenizer as token_utils
-import src.evaluation.utils as eval_utils
+import src.models.model_trainer as model_utils
 
 # Settings
 input_size = 768 # size of the BERT-encoded input
@@ -20,28 +18,7 @@ max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
 epochs = 50
-device = 'cuda' if torch.cuda.is_available() else 'cpu'
-
-# Data Loader
-data = load_data.read_in(
-    sample=False
-    )
-
-train_dataloader = torch.utils.data.DataLoader(
-    data["train"].select_columns(["answer", "generated"]),
-    batch_size=batch_size,
-    shuffle=True,
-    pin_memory=True,
-    drop_last=True # Ensure batch size always 64
-)
-
-eval_dataloader = torch.utils.data.DataLoader(
-    data["validation"].select_columns(["answer", "generated"]),
-    batch_size=batch_size,
-    shuffle=True,
-    pin_memory=True,
-    drop_last=True
-)
+lr = 0.1
 
 # Model-related things
 model = bert.RNNConnected(
@@ -50,72 +27,27 @@ model = bert.RNNConnected(
     num_classes,
     batch_size,
     max_tokens
-    ).to(device)
-optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
+    )
+optimizer = torch.optim.Adam
 
 # Tokenization
-tokenizer = BertTokenizer.from_pretrained(
-    tokenizer_model_name,
-    padding='max_length',
-    truncation=True,
-    max_length=max_tokens
+tokenizer = BertTokenizer.from_pretrained(tokenizer_model_name)
+tokenizer_model = BertModel.from_pretrained(tokenizer_model_name)
+
+# Call model trainer function
+model_trainer(
+    torch_model_object=model,
+    batch_size=batch_size,
+    epochs=num_epochs,
+    tokenizer_object=tokenizer,
+    tokenizer_model_object=tokenizer_model,
+    optimizer_object=optimizer,
+    learning_rate=lr,
+    max_essay_tokens=max_tokens,
+    model_save_name="example",
+    training_device='cpu',
+    padding_strategy="right",
+    truncation_strategy="end",
+    checkpoints_enabled=False,
+    model_save_dir="models"
 )
-
-tokenizer_model = BertModel.from_pretrained(tokenizer_model_name).to(device)
-
-for epoch in range(num_epochs):
-    # Training loop
-    training_loss = 0
-    for batch in train_dataloader:
-        # Reset gradients
-        optimizer.zero_grad()
-
-        # Tokenize input
-        tokenized_batch = token_utils.tokenizer_function(
-            batch["answer"],
-            tokenizer=tokenizer,
-            max_length=max_tokens)
-        input_vectors = token_utils.get_vector_representation(
-            tokenized_batch["input_ids"],
-            tokenizer_model
-        ).to(device)
-        # Shape of input_vectors:
-        # <batch_size> x <num_tokens> x <encoding_size>
-        outputs = model(input_vectors)
-
-        # Convert classes to labels
-        labels = batch["generated"].long() # 1 is Generated/Fake, 0 is Real
-        labels = labels.to(device)
-        loss = model.loss(outputs, labels)
-        loss.backward()
-        training_loss += loss.item()
-        optimizer.step()
-
-    # Validation loop
-    correct = 0
-    total = 0
-    for batch in eval_dataloader:
-        # Tokenize input
-        tokenized_batch = token_utils.tokenizer_function(
-            batch["answer"],
-            tokenizer=tokenizer,
-            max_length=max_tokens)
-        
-        input_vectors = token_utils.get_vector_representation(
-            tokenized_batch["input_ids"],
-            tokenizer_model
-        ).to(device)
-
-        outputs = model.predict(input_vectors)
-        # Gather correct predictions
-        fake = outputs.detach().cpu().numpy()[:, 1]
-        ground_truth = np.array(batch["generated"])
-
-        # Save predictions
-        correct += eval_utils.num_correct_predictions(fake, ground_truth)
-        total += len(ground_truth)
-
-    accuracy = correct / total
-    print(f'Epoch {epoch}, training loss: {training_loss:.2f}, validation accuracy: {accuracy:.5f}')
-
-a = 1
