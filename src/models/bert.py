@@ -1,4 +1,4 @@
-# LSTM model for classification, based on BERT embeddings
+# Fully connected model for classification, based on BERT embeddings
 import torch.nn as nn
 import torch.nn.functional as F
 

@@ -5,7 +5,7 @@ import torch
 from transformers import BertTokenizer, BertModel
 
 # Custom packages
-import src.models.bert_lstm as bert_lstm
+import models.bert as bert
 import src.load.dataset_hf as load_data
 import src.tokenization.general_hf_tokenizer as token_utils
 
@@ -39,7 +39,7 @@ eval_dataloader = torch.utils.data.DataLoader(
 )
 
 # Model-related things
-model = bert_lstm.FullyConnected(input_size, hidden_size, num_classes).to(device)
+model = bert.FullyConnected(input_size, hidden_size, num_classes).to(device)
 optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
 
 # Tokenization
