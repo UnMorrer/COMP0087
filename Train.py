@@ -7,7 +7,7 @@ from Models import LSTM, RNN, Transformer
 from src.tokenization.general_hf_tokenizer import tokenize_input
 from transformers import BertTokenizer, BertModel
 import re
-def Train():
+def Train(model):
     device='cuda' if torch.cuda.is_available() else 'cpu'
     # train_path = r'.\data\essays_train.csv'
     train_path = r'essays_train.csv'
@@ -20,7 +20,12 @@ def Train():
     tokennizer_model = BertModel.from_pretrained('bert-base-uncased')
     max_number_of_tokens = 750
     input_siz = 768
-    network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1, device = device)#to be changed
+    if model == 'LSTM':
+        network = LSTM (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1, device = device)#to be changed
+    elif model == 'RNN':
+        network = RNN (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1)#to be changed
+    elif model == 'Transformer':
+        network = Transformer ()#to be changed
     list_of_files = os.listdir()
     weights_files = []
     for file in list_of_files:
@@ -29,16 +34,17 @@ def Train():
     if weights_files != []:
         weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
         network.load_state_dict(torch.load(weights_files[-1]))
-        epoch = int(weights_files[-1].split('Epoch')[1].split('.')[0])
-    # network = RNN (input_size = max_number_of_tokens, hidden_size = input_siz, num_layers = 2, num_classes = 1)#to be changed
-    # network = nn.Transformer ()#to be changed
+        epoch_min = int(weights_files[-1].split('Epoch')[1].split('.')[0])
+    else:
+        epoch_min = 0
+    
     # network = BertModel.from_pretrained('bert-base-uncased')#to be changed
     network.to(device)
     number_of_epochs = 100
     optimizer = SGD(network.parameters(), lr=0.001)
     criteron = nn.CrossEntropyLoss().to(device)
 
-    for epoch in range(number_of_epochs):
+    for epoch in range(epoch_min, number_of_epochs):
         cum_loss = 0
         for idx, batch in enumerate(trainloader):
             optimizer.zero_grad()
@@ -62,5 +68,5 @@ def Train():
             test_cum_loss += loss.item()
         print(f'Epoch {epoch} test loss: {test_cum_loss/len(testloader)}')
 if __name__ == '__main__':
-    Train()
+    Train('LSTM')
         
