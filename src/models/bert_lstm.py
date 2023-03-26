@@ -1,0 +1,1 @@
+# LSTM model for classification, based on BERT embeddings
