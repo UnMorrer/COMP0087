@@ -10,22 +10,26 @@ import src.models.utils as model_utils
 
 # Settings
 input_size = 768 # size of the BERT-encoded input
-hidden_size = 128
+cnn_kernel_size = (768, 64) # Embedding input kernel, token kernel
+cnn_stride = (1, 16) # Embedding stride, token stride
+pool_kernel_size = (1, 7)
+pool_stride = (1, 3)
 num_classes = 2
-num_epochs = 100
+num_epochs = 1
 max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
 lr = 0.00001
 
 # Model-related things
-model = bert.RNNConnected(
+model = bert.CNNConnected(
     input_size,
-    hidden_size,
+    cnn_kernel_size,
+    cnn_stride,
+    pool_kernel_size,
+    pool_stride,
     num_classes,
-    batch_size,
-    max_tokens,
-    device="cuda"
+    max_tokens
     )
 optimizer = torch.optim.Adam
 
@@ -43,7 +47,7 @@ model_utils.model_trainer(
     optimizer_object=optimizer,
     learning_rate=lr,
     max_essay_tokens=max_tokens,
-    model_save_name="bert_rnn",
+    model_save_name="bert_cnn",
     training_device="cuda",
     padding_strategy="right",
     truncation_strategy="end",
