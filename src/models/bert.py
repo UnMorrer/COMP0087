@@ -183,7 +183,7 @@ class CNNConnected(nn.Module):
         self.loss_reduction = loss_reduction
 
     def forward(self, x):
-        x = x.unsqueeze(1)  #Add signal channel
+        x = x.unsqueeze(1) # Add input channels
         x = self.cnn(x) # Apply CNN
         x = self.mp2d(x) # Max pooling of CNN output
         x = F.relu(x) # RelU activation
@@ -193,10 +193,13 @@ class CNNConnected(nn.Module):
         return(x)
 
     def predict(self, x):
-        x = self.cnn(x) # Apply CNN
-        x = self.mp2d(x) # Max pooling of CNN output
-        x = F.relu(x) # RelU activation
-        x = self.fc(x) # Fully connected -> probabilities
+        with torch.no_grad():
+            x = x.unsqueeze(1) # Add input channels
+            x = self.cnn(x) # Apply CNN
+            x = self.mp2d(x) # Max pooling of CNN output
+            x = F.relu(x) # RelU activation
+            x = x.flatten(1) # Flatten before passing into linear layer
+            x = self.fc(x) # Fully connected -> probabilities
 
         return(x)
 

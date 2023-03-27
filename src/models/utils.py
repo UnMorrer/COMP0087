@@ -134,6 +134,7 @@ def model_trainer(
                 tokenized_batch["input_ids"],
                 tokenizer_model
             ).to(training_device)
+
             # Shape of input_vectors:
             # <batch_size> x <num_tokens> x <encoding_size>
             outputs = model(input_vectors)
