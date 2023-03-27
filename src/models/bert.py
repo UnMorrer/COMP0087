@@ -107,6 +107,7 @@ class CNNConnected(nn.Module):
             + 2 * padding
             - dilation
             * (kernel_size - 1)
+            - 1
             ) / stride + 1
 
             return out
@@ -126,7 +127,7 @@ class CNNConnected(nn.Module):
         # Height: input_size
 
         self.cnn_h_out = calc_conv_out_size(
-            input_size,
+            max_tokens_per_essay,
             get_nth_number(padding_size, 0),
             get_nth_number(dilation, 0),
             get_nth_number(cnn_kernel_size, 0),
@@ -134,7 +135,7 @@ class CNNConnected(nn.Module):
         )
 
         self.cnn_w_out = calc_conv_out_size(
-            max_tokens_per_essay,
+            input_size,
             get_nth_number(padding_size, 1),
             get_nth_number(dilation, 1),
             get_nth_number(cnn_kernel_size, 1),
@@ -142,8 +143,8 @@ class CNNConnected(nn.Module):
         )
 
         # Roundings
-        self.cnn_h_out = np.ceil(self.cnn_h_out)
-        self.cnn_w_out = np.ceil(self.cnn_w_out)
+        self.cnn_h_out = np.floor(self.cnn_h_out)
+        self.cnn_w_out = np.floor(self.cnn_w_out)
 
         # Max pooling for convolution
         self.mp2d = nn.MaxPool2d(
@@ -169,8 +170,8 @@ class CNNConnected(nn.Module):
             get_nth_number(pooling_stride, 1)
         )
         # Roundings
-        self.pooling_h_out = np.ceil(self.pooling_h_out).astype(int)
-        self.pooling_w_out = np.ceil(self.pooling_w_out).astype(int)
+        self.pooling_h_out = np.floor(self.pooling_h_out).astype(int)
+        self.pooling_w_out = np.floor(self.pooling_w_out).astype(int)
 
         # Linear/Fully connected layer
         self.fc = nn.Linear(

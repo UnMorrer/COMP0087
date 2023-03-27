@@ -10,10 +10,10 @@ import src.models.utils as model_utils
 
 # Settings
 input_size = 768 # size of the BERT-encoded input
-cnn_kernel_size = (768, 64) # Embedding input kernel, token kernel
-cnn_stride = (1, 16) # Embedding stride, token stride
-pool_kernel_size = (1, 7)
-pool_stride = (1, 3)
+cnn_kernel_size = (64, 768) # Token kernel, Embedding input kernel
+cnn_stride = (16, 1) # , token stride, embedding stride
+pool_kernel_size = (7, 1)
+pool_stride = (3, 1)
 num_classes = 2
 num_epochs = 1
 max_tokens = 512
