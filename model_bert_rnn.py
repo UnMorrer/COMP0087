@@ -12,7 +12,7 @@ import src.models.utils as model_utils
 input_size = 768 # size of the BERT-encoded input
 hidden_size = 128
 num_classes = 2
-num_epochs = 1
+num_epochs = 50
 max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
