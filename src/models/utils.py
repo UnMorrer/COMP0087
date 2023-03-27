@@ -187,7 +187,7 @@ def model_trainer(
         # Save best model so far
         if accuracy > best_eval_accuracy:
             best_eval_accuracy = accuracy
-            print(f"New accuracy record: {accuracy}")
+            print(f"New accuracy record: {accuracy:.5f}")
             model_save_path = os.path.join(
                 os.getcwd(),
                 model_save_dir, 
