@@ -28,15 +28,15 @@ def Train(model):
         network = Transformer ()#to be changed
     list_of_files = os.listdir()
     weights_files = []
-    # for file in list_of_files:
-    #     if file.startswith('Model-LSTM-Epoch'):
-    #         weights_files.append(file)
-    # if weights_files != []:
-    #     weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
-    #     network.load_state_dict(torch.load(weights_files[-1]))
-    #     epoch_min = int(weights_files[-1].split('Epoch')[1].split('.')[0])
-    # else:
-    #     epoch_min = 0
+    for file in list_of_files:
+        if file.startswith('Model-LSTM-Epoch'):
+            weights_files.append(file)
+    if weights_files != []:
+        weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
+        network.load_state_dict(torch.load(weights_files[-1]))
+        epoch_min = int(weights_files[-1].split('Epoch')[1].split('.')[0])
+    else:
+        epoch_min = 0
     epoch_min = 0
     # network = BertModel.from_pretrained('bert-base-uncased')#to be changed
     network.to(device)
@@ -57,8 +57,8 @@ def Train(model):
             cum_loss += loss.item()
             optimizer.step()
         print(f'Epoch {epoch} train loss: {cum_loss/len(trainloader)}')
-        # torch.save(network.state_dict(), f'Model-LSTM-Epoch{epoch}.pt')
-        torch.save(network.state_dict(), f'Model.pt')
+        torch.save(network.state_dict(), f'Model-LSTM-Epoch{epoch}.pt')
+        # torch.save(network.state_dict(), f'Model.pt')
         test_cum_loss = 0
         with torch.no_grad():
             for idx, batch in enumerate(testloader):
