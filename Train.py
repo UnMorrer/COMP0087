@@ -28,16 +28,16 @@ def Train(model):
         network = Transformer ()#to be changed
     list_of_files = os.listdir()
     weights_files = []
-    for file in list_of_files:
-        if file.startswith('Model-LSTM-Epoch'):
-            weights_files.append(file)
-    if weights_files != []:
-        weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
-        network.load_state_dict(torch.load(weights_files[-1]))
-        epoch_min = int(weights_files[-1].split('Epoch')[1].split('.')[0])
-    else:
-        epoch_min = 0
-    
+    # for file in list_of_files:
+    #     if file.startswith('Model-LSTM-Epoch'):
+    #         weights_files.append(file)
+    # if weights_files != []:
+    #     weights_files = sorted(weights_files, key=lambda s: int(re.search(r'\d+', s).group()))
+    #     network.load_state_dict(torch.load(weights_files[-1]))
+    #     epoch_min = int(weights_files[-1].split('Epoch')[1].split('.')[0])
+    # else:
+    #     epoch_min = 0
+    epoch_min = 0
     # network = BertModel.from_pretrained('bert-base-uncased')#to be changed
     network.to(device)
     number_of_epochs = 100
@@ -57,16 +57,18 @@ def Train(model):
             cum_loss += loss.item()
             optimizer.step()
         print(f'Epoch {epoch} train loss: {cum_loss/len(trainloader)}')
-        torch.save(network.state_dict(), f'Model-LSTM-Epoch{epoch}.pt')
+        # torch.save(network.state_dict(), f'Model-LSTM-Epoch{epoch}.pt')
+        torch.save(network.state_dict(), f'Model.pt')
         test_cum_loss = 0
-        for idx, batch in enumerate(testloader):
-            tokenized_batched = tokenize_input(text = batch['input_ids'],num_tokens = max_number_of_tokens, model = tokennizer_model, tokenizer = tokenizer)
-            tokenized_batched = tokenized_batched.to(device)
-            pred = network(tokenized_batched)
-            batch['label'] = batch['label'].to(device)
-            loss = criteron(pred.squeeze(-1), batch['label'].float())
-            test_cum_loss += loss.item()
-        print(f'Epoch {epoch} test loss: {test_cum_loss/len(testloader)}')
+        with torch.no_grad():
+            for idx, batch in enumerate(testloader):
+                tokenized_batched = tokenize_input(text = batch['input_ids'],num_tokens = max_number_of_tokens, model = tokennizer_model, tokenizer = tokenizer)
+                tokenized_batched = tokenized_batched.to(device)
+                pred = network(tokenized_batched)
+                batch['label'] = batch['label'].to(device)
+                loss = criteron(pred.squeeze(-1), batch['label'].float())
+                test_cum_loss += loss.item()
+            print(f'Epoch {epoch} test loss: {test_cum_loss/len(testloader)}')
 if __name__ == '__main__':
     Train('LSTM')
         
