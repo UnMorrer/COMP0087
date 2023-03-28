@@ -266,17 +266,18 @@ class LSTMConnected(nn.Module):
         
     def forward(self, x):
         # Define the forward pass of the neural network
-        x, self.hidden, self.cell = self.lstm(x, self.hidden, self.cell) # Run thru RNN + update hidden state
+        x, (self.hidden, self.cell) = self.lstm(x, (self.hidden, self.cell)) # Run thru RNN + update hidden state
         x = x.flatten(1)  # flatten X to feed into Linear layer
         x = self.fc(x)
 
-        # Detach the hidden state
+        # Detach the hidden states
         self.hidden = self.hidden.detach()
+        self.cell = self.cell.detach()
         return x
     
     def predict(self, x):
         with torch.no_grad():
-            x, _ = self.rnn(x, self.hidden) # Run thru RNN
+            x, (_, _) = self.lstm(x, (self.hidden, self.cell)) # Run thru RNN
             x = x.flatten(1)  # flatten X to feed into Linear layer
             x = self.fc(x)
             x = F.softmax(x, dim=1) # Convert to probabilities
