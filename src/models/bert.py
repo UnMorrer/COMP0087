@@ -207,3 +207,82 @@ class CNNConnected(nn.Module):
         # Define the loss function
         loss = nn.CrossEntropyLoss(reduction=self.loss_reduction)
         return loss(probs, labels)
+
+
+# BERT model encodings + LSTM layer
+class LSTMConnected(nn.Module):
+    def __init__(self,
+                 input_size,
+                 hidden_size,
+                 num_classes,
+                 batch_size,
+                 max_tokens_per_essay,
+                 device='cuda' if torch.cuda.is_available() else 'cpu',
+                 init_hidden_state=None,
+                 init_cell_state=None,
+                 lstm_layers=3,
+                 bidirectional=True,
+                 loss_reduction="mean",
+                 lstm_dropout=0.1):
+        super(LSTMConnected, self).__init__()
+        # Define the layers of the neural network
+
+        # LSTM that runs through the 512-long embedding
+        # and gets overall "meaning" out
+        self.lstm = nn.LSTM(
+            input_size,
+            hidden_size,
+            num_layers=lstm_layers,
+            batch_first=True,
+            bidirectional=bidirectional, 
+            dropout=lstm_dropout) # Only works if there is more than 1 RNN layer
+        
+        # Bidirectional LSTM
+        self.bidirectional_multiplier = 2 if bidirectional else 1
+
+        # Keep track of LSTM hidden + cell states
+        if init_hidden_state is None:
+            self.hidden = torch.zeros(self.bidirectional_multiplier*lstm_layers,
+                                 batch_size,
+                                 hidden_size).to(device)
+        else:
+            self.hidden = init_hidden_state.to(device)
+
+        if init_cell_state is None:
+            self.cell = torch.zeros(self.bidirectional_multiplier*lstm_layers,
+                                 batch_size,
+                                 hidden_size).to(device)
+        else:
+            self.cell = init_cell_state.to(device)
+
+        # Linear/Dense/Fully Connected layer for RNN output
+        self.fc = nn.Linear(
+            # shape [batch_size, self.bidirectional_multiplier*hidden_size*tokens_per_essay]
+            self.bidirectional_multiplier*hidden_size*max_tokens_per_essay,
+            num_classes)
+        
+        # Other things to save
+        self.loss_reduction = loss_reduction
+        
+    def forward(self, x):
+        # Define the forward pass of the neural network
+        x, self.hidden, self.cell = self.lstm(x, self.hidden, self.cell) # Run thru RNN + update hidden state
+        x = x.flatten(1)  # flatten X to feed into Linear layer
+        x = self.fc(x)
+
+        # Detach the hidden state
+        self.hidden = self.hidden.detach()
+        return x
+    
+    def predict(self, x):
+        with torch.no_grad():
+            x, _ = self.rnn(x, self.hidden) # Run thru RNN
+            x = x.flatten(1)  # flatten X to feed into Linear layer
+            x = self.fc(x)
+            x = F.softmax(x, dim=1) # Convert to probabilities
+            return x
+    
+    def loss(self, probs, labels):
+        # Define the loss function
+        loss = nn.CrossEntropyLoss(reduction=self.loss_reduction)
+        return loss(probs, labels)
