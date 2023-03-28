@@ -15,11 +15,11 @@ cnn_stride = (16, 1) # , token stride, embedding stride
 pool_kernel_size = (7, 1)
 pool_stride = (3, 1)
 num_classes = 2
-num_epochs = 1
+num_epochs = 100
 max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
-lr = 0.00001
+lr = 0.001
 
 # Model-related things
 model = bert.CNNConnected(
