@@ -16,7 +16,7 @@ num_epochs = 100
 max_tokens = 512
 tokenizer_model_name = "bert-base-uncased"
 batch_size = 64
-lr = 0.00001
+lr = 0.0001
 
 # Model-related things
 model = bert.LSTMConnected(
