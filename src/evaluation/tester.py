@@ -1,12 +1,36 @@
+# Function to test models on test set & chatGPT output
+
+# General packages
 import torch
-from torch import nn
-from torch.optim import Adam, SGD
-import os
+
+# Custom packages
+import src.load.dataset_hf as load
+
 from Data_Loader import Data_Loader, TextDataset
 from Models import LSTM, RNN, Transformer
 from src.tokenization.general_hf_tokenizer import tokenize_input
 from transformers import BertTokenizer, BertModel
-import re
+
+# Settings
+file_loc = {
+    "test": "data/essays_test.csv",
+    "raw": "data/essays_raw.csv"
+}
+
+raw, test = load.read_in(
+    sample=False,
+    data_files=file_loc
+)
+
+def model_tester(
+        model_obj,
+        weights_file,
+        dataset,
+        batch_size,
+        device='cuda' if torch.cuda.is_available() else 'cpu'
+):
+    pass
+
 
 def Test(weights_file, model):
     device='cuda' if torch.cuda.is_available() else 'cpu'
@@ -48,7 +72,6 @@ def Test(weights_file, model):
     print('Precision: ', precision)
     print('F1: ', F1)
     print(matrix)
-
 
 if __name__ == '__main__':
     Test('Model-LSTM-Epoch44.pt', 'LSTM')
