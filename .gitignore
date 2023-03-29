@@ -144,7 +144,7 @@ config/config.json
 visualizations
 
 # Model
-/.pt
+.pt
 
 # spead sheet
-/.csv
+.csv
