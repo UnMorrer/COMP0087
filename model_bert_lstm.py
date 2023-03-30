@@ -43,7 +43,7 @@ model_utils.model_trainer(
     optimizer_object=optimizer,
     learning_rate=lr,
     max_essay_tokens=max_tokens,
-    model_save_name="bert_rnn",
+    model_save_name="bert_lstm",
     training_device="cuda",
     padding_strategy="right",
     truncation_strategy="end",
