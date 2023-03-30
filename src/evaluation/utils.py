@@ -107,7 +107,7 @@ def model_tester(
         # Gather correct predictions
         pred = outputs.detach().cpu()
         pred = torch.clamp(pred.round(), 0, 1).squeeze(1).int()
-        batch['label'] = batch['label'].to(device)
+        batch['generated'] = batch['generated'].long().to(device)
         for i in range(pred.shape[0]):
             matrix[pred[i]][batch['generated'][i].int()] += 1
     
