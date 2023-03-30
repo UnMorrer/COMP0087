@@ -106,7 +106,13 @@ def model_tester(
 
         # Gather correct predictions
         pred = outputs.detach().cpu()
+
+        # Round up/down
         pred = torch.clamp(pred.round(), 0, 1).squeeze(1).int()
+
+        # Get which class is predicted
+        pred = (pred == 1).nonzero(as_tuple=True)[1]
+
         batch['generated'] = batch['generated'].long().to(device)
         for i in range(pred.shape[0]):
             matrix[pred[i]][batch['generated'][i].int()] += 1
