@@ -22,24 +22,46 @@ eval_models = [
     "bert_lstm"
 ]
 
+tokenizer_model_name = "bert-base-uncased"
+
 model_info = {
     "bert_rnn": {
-        "torch_model_obj": bert_models.RNNConnected,
+        "torch_model_obj": bert_models.RNNConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=512,
+            ),
         "weights_file_path": os.path.join(os.getcwd(), "models", "bert_rnn_best"),
-        "tokenizer_obj": BertTokenizer,
-        "tokenizer_model_obj": BertModel,
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
     },
     "bert_lstm": {
-        "torch_model_obj": bert_models.LSTMConnected,
+        "torch_model_obj": bert_models.LSTMConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=512,
+            ),
         "weights_file_path": os.path.join(os.getcwd(), "models", "bert_lstm_best"),
-        "tokenizer_obj": BertTokenizer,
-        "tokenizer_model_obj": BertModel,
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
     },
     "bert_cnn": {
-        "torch_model_obj": bert_models.CNNConnected,
+        "torch_model_obj": bert_models.CNNConnected(
+            input_size=768,
+            cnn_kernel_size=(64, 768),
+            cnn_stride=(16, 1),
+            pooling_kernel_size=(7, 1),
+            pooling_stride=(3, 1),
+            num_classes=2,
+            max_tokens_per_essay=512,
+        ),
         "weights_file_path": os.path.join(os.getcwd(), "models", "bert_cnn_best"),
-        "tokenizer_obj": BertTokenizer,
-        "tokenizer_model_obj": BertModel,
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
     }
 }
 

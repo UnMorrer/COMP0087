@@ -70,7 +70,7 @@ def model_tester(
 
     # Dataloader
     dataloader = torch.utils.data.DataLoader(
-        data["validation"].select_columns(["answer", "generated"]),
+        data.select_columns(["answer", "generated"]),
         batch_size=batch_size,
         shuffle=True,
         pin_memory=True,
