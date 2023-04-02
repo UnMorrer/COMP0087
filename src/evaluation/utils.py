@@ -107,12 +107,8 @@ def model_tester(
         # Gather correct predictions
         pred = outputs.detach().cpu()
 
-        # Round up/down
-        pred = torch.clamp(pred, 0, 1).squeeze(1).int()
-
         # Get which class is predicted
-        # TODO: Leaking in CNN model - 0, 0
-        pred = (pred == 1).nonzero(as_tuple=True)[1]
+        pred = torch.topk(pred, k=1, dim=1).indices.squeeze()
 
         batch['generated'] = batch['generated'].long().to(device)
         for i in range(pred.shape[0]):
