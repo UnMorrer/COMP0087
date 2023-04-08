@@ -17,15 +17,19 @@ file_loc = {
 }
 
 eval_models = [
-    "bert_rnn",
-    "bert_cnn",
-    "bert_lstm"
+    "bert_rnn_512",
+    "bert_rnn_128",
+    "bert_rnn_64",
+    "bert_cnn_512",
+    "bert_lstm_512",
+    "bert_lstm_128",
+    "bert_lstm_64"
 ]
 
 tokenizer_model_name = "bert-base-uncased"
 
 model_info = {
-    "bert_rnn": {
+    "bert_rnn_512": {
         "torch_model_obj": bert_models.RNNConnected(
             input_size=768,
             hidden_size=128,
@@ -37,7 +41,31 @@ model_info = {
         "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
         "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
     },
-    "bert_lstm": {
+    "bert_rnn_128": {
+        "torch_model_obj": bert_models.RNNConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=128,
+            ),
+        "weights_file_path": os.path.join(os.getcwd(), "models", "bert_rnn_128_best"),
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
+    },
+    "bert_rnn_64": {
+        "torch_model_obj": bert_models.RNNConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=64,
+            ),
+        "weights_file_path": os.path.join(os.getcwd(), "models", "bert_rnn_64_best"),
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
+    },
+    "bert_lstm_512": {
         "torch_model_obj": bert_models.LSTMConnected(
             input_size=768,
             hidden_size=128,
@@ -49,7 +77,31 @@ model_info = {
         "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
         "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
     },
-    "bert_cnn": {
+    "bert_lstm_128": {
+        "torch_model_obj": bert_models.LSTMConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=128,
+            ),
+        "weights_file_path": os.path.join(os.getcwd(), "models", "bert_lstm_128_best"),
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
+    },
+    "bert_lstm_64": {
+        "torch_model_obj": bert_models.LSTMConnected(
+            input_size=768,
+            hidden_size=128,
+            num_classes=2,
+            batch_size=64,
+            max_tokens_per_essay=64,
+            ),
+        "weights_file_path": os.path.join(os.getcwd(), "models", "bert_lstm_64_best"),
+        "tokenizer_obj": BertTokenizer.from_pretrained(tokenizer_model_name),
+        "tokenizer_model_obj": BertModel.from_pretrained(tokenizer_model_name),
+    },
+    "bert_cnn_512": {
         "torch_model_obj": bert_models.CNNConnected(
             input_size=768,
             cnn_kernel_size=(64, 768),
@@ -79,7 +131,7 @@ test = data["test"]
 chatGPT_test = raw.filter(lambda x: x["model"] == "chatGPT")
 
 # NOTE: Setting for evaluation datasets
-eval_datasets = [chatGPT_test, test]
+eval_datasets = [test] #, chatGPT_test]
 
 
 # Evaluate all possible model X dataset combinations
