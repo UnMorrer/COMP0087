@@ -11,6 +11,8 @@ class LSTM(nn.Module):
         self.device = device
     
     def forward(self, enbeded_answer):
+        h0 = torch.zeros(self.num_layers, enbeded_answer.size(0), self.hidden_size)
+        c0 = torch.zeros(self.num_layers, enbeded_answer.size(0), self.hidden_size)
         # Set initial hidden and cell states 
 
         h0 = torch.zeros(self.num_layers, enbeded_answer.size(0), self.hidden_size).to(self.device)
