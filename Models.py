@@ -58,5 +58,5 @@ class Transformer(nn.Module):
         out, _ = self.transformer(x, h0)  # out: tensor of shape (batch_size, seq_length, hidden_size)
         
         # Decode the hidden state of the last time step
-        out = self.fc(lstm_out[:, -1, :])
+        out = self.fc(out[:, -1, :])
         return out
