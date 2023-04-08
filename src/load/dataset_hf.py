@@ -25,8 +25,9 @@ def read_in(
     random_seed - int: Random seed for sampling
 
     Returns:
-    data - DataSetDict with data loaded.
+    data - DataSetDict or IterableDatasetDict with data loaded.
     Docs are here: https://huggingface.co/docs/datasets/v2.10.0/en/package_reference/main_classes#datasets.DatasetDict
+    https://huggingface.co/docs/datasets/v2.10.0/en/package_reference/main_classes#datasets.IterableDatasetDict
     """
 
     # Load dataset
@@ -42,6 +43,7 @@ def read_in(
 
     # Take random sample 
     if sample:
-        data = data.select(range(sample_size))
+        for k in data.keys():
+            data[k] = data[k].select(range(sample_size))
     
     return data
