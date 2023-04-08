@@ -49,6 +49,7 @@ class RNNConnected(nn.Module):
         
         # Other things to save
         self.loss_reduction = loss_reduction
+        self.max_tokens_per_essay = max_tokens_per_essay
         
     def forward(self, x):
         # Define the forward pass of the neural network
@@ -181,6 +182,7 @@ class CNNConnected(nn.Module):
         
         # Loss
         self.loss_reduction = loss_reduction
+        self.max_tokens_per_essay = max_tokens_per_essay
 
     def forward(self, x):
         x = x.unsqueeze(1) # Add input channels
@@ -263,6 +265,7 @@ class LSTMConnected(nn.Module):
         
         # Other things to save
         self.loss_reduction = loss_reduction
+        self.max_tokens_per_essay = max_tokens_per_essay
         
     def forward(self, x):
         # Define the forward pass of the neural network

@@ -131,7 +131,7 @@ test = data["test"]
 chatGPT_test = raw.filter(lambda x: x["model"] == "chatGPT")
 
 # NOTE: Setting for evaluation datasets
-eval_datasets = [test] #, chatGPT_test]
+eval_datasets = [chatGPT_test] #, chatGPT_test]
 
 
 # Evaluate all possible model X dataset combinations
@@ -147,7 +147,7 @@ for dataset in eval_datasets:
                 tokenizer_obj=model_info[model_name]["tokenizer_obj"],
                 tokenizer_model_obj=model_info[model_name]["tokenizer_model_obj"],
                 device='cuda' if torch.cuda.is_available() else 'cpu',
-                max_essay_tokens=512,
+                max_essay_tokens=model_info[model_name]["torch_model_obj"].max_tokens_per_essay,
                 padding_strategy="right",
                 truncation_strategy="end",
                 print_scores=True
