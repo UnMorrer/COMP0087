@@ -141,10 +141,4 @@ data/*
 config/config.json
 
 # Visualizations
-visualizations
-
-# Model
-.pt
-
-# spead sheet
-.csv
+visualizations/*
