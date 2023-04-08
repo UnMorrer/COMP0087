@@ -142,6 +142,3 @@ config/config.json
 
 # Visualizations
 visualizations/*
-
-# models
-models/*
