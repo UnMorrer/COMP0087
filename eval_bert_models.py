@@ -13,7 +13,8 @@ import src.models.bert as bert_models
 # Settings
 file_loc = {
     "test": "data/essays_test.csv",
-    "raw": "data/essays_raw.csv"
+    "raw": "data/essays_raw.csv",
+    "adversarial": "data/essays_adversarial1.csv",
 }
 
 eval_models = [
@@ -126,12 +127,13 @@ data = load.read_in(
 
 raw = data["raw"]
 test = data["test"]
+adversarial = data["adversarial"]
 
 # Bit of data engineering to keep only chatGPT output from raw set
 chatGPT_test = raw.filter(lambda x: x["model"] == "chatGPT")
 
 # NOTE: Setting for evaluation datasets
-eval_datasets = [chatGPT_test] #, chatGPT_test]
+eval_datasets = [adversarial] #, chatGPT_test]
 
 
 # Evaluate all possible model X dataset combinations
